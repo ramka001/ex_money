@@ -2,38 +2,21 @@ defmodule ExMoney.Web.Mobile.AccountController do
   use ExMoney.Web, :controller
 
   alias ExMoney.DateHelper
-  alias ExMoney.{Repo, Transaction, Account, AccountsBalanceHistory}
+  alias ExMoney.{Repo, Transaction, AccountsBalanceHistory}
+  alias ExMoney.Accounts
+  alias ExMoney.Accounts.Account
+  alias ExMoney.Transactions
 
   plug Guardian.Plug.EnsureAuthenticated, handler: ExMoney.Guardian.Mobile.Unauthenticated
   plug :put_layout, "mobile.html"
 
   def show(conn, %{"id" => account_id} = params) do
+    user = Guardian.Plug.current_resource(conn)
     parsed_date = DateHelper.parse_date(params["date"])
-    from = DateHelper.first_day_of_month(parsed_date)
-    to = DateHelper.last_day_of_month(parsed_date)
 
-    account = Account.by_id_with_login(account_id) |> Repo.one
-
-    month_transactions = Transaction.by_month(account_id, from, to)
-    |> Repo.all
-
-    categories = Transaction.group_by_month_by_category(account_id, from, to)
-    |> Repo.all
-    |> Enum.reduce(%{}, fn({category, amount}, acc) ->
-      {float_amount, _} = Decimal.to_string(amount, :normal)
-      |> Float.parse
-
-      positive_float = float_amount * -1
-
-      Map.put(acc, category.id,
-        %{
-          id: category.id,
-          humanized_name: category.humanized_name,
-          css_color: category.css_color,
-          amount: positive_float,
-          parent_id: category.parent_id
-        })
-    end)
+    account = Accounts.get_account(account_id)
+    month_transactions = Transactions.for_month(params["date"], account_id, user.id)
+    categories =  Transactions.for_month_grouped_by_category(params["date"], account_id, user.id)
 
     current_month = DateHelper.current_month(parsed_date)
     previous_month = DateHelper.previous_month(parsed_date)
@@ -49,13 +32,13 @@ defmodule ExMoney.Web.Mobile.AccountController do
   end
 
   def refresh(conn, %{"id" => account_id}) do
-    account = Repo.get(Account, account_id)
+    account = Accounts.get_account(account_id)
 
     render conn, :refresh, account: account
   end
 
   def expenses(conn, %{"date" => date, "id" => account_id}) do
-    account = Repo.get!(Account, account_id)
+    account = Accounts.get_account(account_id)
     parsed_date = DateHelper.parse_date(date)
     from = DateHelper.first_day_of_month(parsed_date)
     to = DateHelper.last_day_of_month(parsed_date)
@@ -77,7 +60,7 @@ defmodule ExMoney.Web.Mobile.AccountController do
   end
 
   def income(conn, %{"date" => date, "id" => account_id}) do
-    account = Repo.get!(Account, account_id)
+    account = Accounts.get_account(account_id)
     parsed_date = DateHelper.parse_date(date)
     from = DateHelper.first_day_of_month(parsed_date)
     to = DateHelper.last_day_of_month(parsed_date)

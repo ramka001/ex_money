@@ -1,6 +1,7 @@
 defmodule ExMoney.Saltedge.Account do
   require Logger
-  alias ExMoney.{Account, Repo}
+  alias ExMoney.Repo
+  alias ExMoney.Accounts.Account
 
   def sync(user_id, saltedge_login_id) do
     endpoint = "accounts?login_id=#{saltedge_login_id}"

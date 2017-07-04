@@ -5,7 +5,7 @@ defmodule ExMoney.AccountsBalanceHistory do
 
   schema "accounts_balance_history" do
     field :balance, :decimal
-    belongs_to :account, ExMoney.Account
+    belongs_to :account, ExMoney.Accounts.Account
 
     timestamps()
   end

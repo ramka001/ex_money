@@ -1,7 +1,11 @@
 defmodule ExMoney.Web.Mobile.DashboardController do
   use ExMoney.Web, :controller
 
-  alias ExMoney.{Repo, Transaction, User, Account, FavouriteTransaction}
+  alias ExMoney.{Repo, User, FavouriteTransaction}
+  alias ExMoney.Transactions
+  alias ExMoney.Transactions.Transaction
+  alias ExMoney.Accounts
+  alias ExMoney.Accounts.Account
 
   plug :put_layout, "mobile.html"
 
@@ -17,7 +21,7 @@ defmodule ExMoney.Web.Mobile.DashboardController do
 
   defp _overview(conn, user) do
     last_login_at = fetch_last_login_at()
-    transactions = Transaction.recent(user.id) |> Repo.all
+    transactions = Transactions.recent(user.id)
 
     new_recent_transactions = Enum.filter(transactions, fn(tr) ->
       NaiveDateTime.compare(tr.inserted_at, last_login_at) != :lt

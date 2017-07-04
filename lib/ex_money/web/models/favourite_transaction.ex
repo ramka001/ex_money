@@ -15,7 +15,7 @@ defmodule ExMoney.FavouriteTransaction do
 
     belongs_to :category, ExMoney.Category
     belongs_to :user, ExMoney.User
-    belongs_to :account, ExMoney.Account
+    belongs_to :account, ExMoney.Accounts.Account
 
     timestamps()
   end

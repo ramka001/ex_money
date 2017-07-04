@@ -1,7 +1,7 @@
-defmodule ExMoney.TransactionInfo do
+defmodule ExMoney.Transactions.TransactionInfo do
   use ExMoney.Web, :model
 
-  alias ExMoney.TransactionInfo
+  alias ExMoney.Transactions.TransactionInfo
 
   schema "transactions_info" do
     field :record_number, :string
@@ -25,12 +25,12 @@ defmodule ExMoney.TransactionInfo do
     field :additional, :string
     field :unit_price, :decimal
 
-    belongs_to :transaction, ExMoney.Transaction
+    belongs_to :transaction, ExMoney.Transactions.Transaction
 
     timestamps()
   end
 
-  @optional_fields ~w(
+  @fields ~w(
     transaction_id
     record_number
     information
@@ -54,15 +54,9 @@ defmodule ExMoney.TransactionInfo do
     unit_price
   )a
 
-  @doc """
-  Creates a changeset based on the `model` and `params`.
-
-  If no params are provided, an invalid changeset is returned
-  with no validation performed.
-  """
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, @optional_fields)
+    |> cast(params, @fields)
   end
 
   def by_transaction_id(transaction_id) do

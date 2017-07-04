@@ -1,7 +1,8 @@
-defmodule ExMoney.Transaction do
-  use ExMoney.Web, :model
+defmodule ExMoney.Transactions.Transaction do
+  use Ecto.Schema
+  import Ecto.Changeset
 
-  alias ExMoney.Transaction
+  alias ExMoney.Transactions.Transaction
 
   import Ecto.Query
 
@@ -16,11 +17,11 @@ defmodule ExMoney.Transaction do
     field :duplicated, :boolean, default: false
     field :rule_applied, :boolean, default: false
 
-    has_one :transaction_info, ExMoney.TransactionInfo, on_delete: :delete_all
+    has_one :transaction_info, ExMoney.Transactions.TransactionInfo, on_delete: :delete_all
     belongs_to :category, ExMoney.Category
     belongs_to :user, ExMoney.User
-    belongs_to :account, ExMoney.Account
-    belongs_to :saltedge_account, ExMoney.Account,
+    belongs_to :account, ExMoney.Accounts.Account
+    belongs_to :saltedge_account, ExMoney.Accounts.Account,
       foreign_key: :saltedge_account_id,
       references: :saltedge_account_id
 
@@ -82,37 +83,13 @@ defmodule ExMoney.Transaction do
       limit: 1
   end
 
-  def recent(user_id) do
-    current_date = Timex.local
-    from = Timex.shift(current_date, days: -15)
-
-    from tr in Transaction,
-      where: tr.made_on >= ^from,
-      where: tr.user_id == ^user_id,
-      preload: [:transaction_info, :category, :account],
-      order_by: [desc: tr.inserted_at]
-  end
-
   def new_since(time, account_id) do
     from tr in Transaction,
       where: tr.inserted_at >= ^time,
       where: tr.account_id == ^account_id
   end
 
-  def by_month(account_ids, from, to) when is_list(account_ids) do
-    from tr in Transaction,
-      preload: [:account, :category],
-      where: tr.made_on >= ^from,
-      where: tr.made_on <= ^to,
-      where: tr.account_id in ^account_ids
-  end
-
-  def by_month(account_id, from, to) do
-    from tr in Transaction,
-      where: tr.made_on >= ^from,
-      where: tr.made_on <= ^to,
-      where: tr.account_id == ^account_id
-  end
+  
 
   def expenses_by_month_by_category(account_id, from, to, category_ids) do
     Transaction.by_month(account_id, from, to)
@@ -162,15 +139,15 @@ defmodule ExMoney.Transaction do
       having: sum(tr.amount) < 0
   end
 
-  def group_by_month_by_category(account_id, from, to) do
+  def by_month(account_id, from, to) do
     from tr in Transaction,
-      join: c in assoc(tr, :category),
       where: tr.made_on >= ^from,
       where: tr.made_on <= ^to,
-      where: tr.account_id == ^account_id,
-      where: tr.amount < 0,
-      group_by: [c.id],
-      select: {c, sum(tr.amount)}
+      where: tr.account_id == ^account_id
+  end
+
+  def group_by_month_by_category(account_id, from, to) do
+    
   end
 
   # FIXME cache instead of db

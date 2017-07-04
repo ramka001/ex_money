@@ -1,7 +1,9 @@
-defmodule ExMoney.Account do
-  use ExMoney.Web, :model
+defmodule ExMoney.Accounts.Account do
+  import Ecto.Query, warn: false
+  use Ecto.Schema
+  import Ecto.Changeset
 
-  alias ExMoney.Account
+  alias ExMoney.Accounts.Account
 
   schema "accounts" do
     field :saltedge_account_id, :integer
@@ -18,7 +20,7 @@ defmodule ExMoney.Account do
       references: :saltedge_login_id
     belongs_to :user, ExMoney.User
     has_many :rules, ExMoney.Rule
-    has_many :transactions, ExMoney.Transaction,
+    has_many :transactions, ExMoney.Transactions.Transaction,
       on_delete: :delete_all,
       foreign_key: :saltedge_account_id,
       references: :saltedge_account_id
@@ -94,11 +96,5 @@ defmodule ExMoney.Account do
       where: not is_nil(a.saltedge_account_id),
       select: {a.name, a.id},
       order_by: a.name
-  end
-
-  def by_id_with_login(account_id) do
-    from a in Account,
-      where: a.id == ^account_id,
-      preload: [:login]
   end
 end

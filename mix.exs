@@ -14,7 +14,7 @@ defmodule ExMoney.Mixfile do
   end
 
   def application do
-    [mod: {ExMoney, []},
+    [mod: {ExMoney.Application, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger,
                     :phoenix_ecto, :postgrex, :httpoison, :tzdata]]
   end

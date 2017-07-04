@@ -29,7 +29,7 @@ defmodule ExMoney.Login do
     field :fetch_all_tried, :boolean, default: false
 
     belongs_to :user, ExMoney.User
-    has_many :accounts, ExMoney.Account,
+    has_many :accounts, ExMoney.Accounts.Account,
       on_delete: :delete_all,
       references: :saltedge_login_id,
       foreign_key: :saltedge_login_id

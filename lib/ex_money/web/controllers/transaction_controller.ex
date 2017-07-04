@@ -1,7 +1,9 @@
 defmodule ExMoney.Web.TransactionController do
   use ExMoney.Web, :controller
 
-  alias ExMoney.{Transaction, Repo, Paginator, Account, Category}
+  alias ExMoney.{Repo, Paginator, Account, Category}
+  alias ExMoney.Transactions
+  alias ExMoney.Transactions.Transaction
   import Ecto.Query
 
   plug Guardian.Plug.EnsureAuthenticated, handler: ExMoney.Guardian.Unauthenticated

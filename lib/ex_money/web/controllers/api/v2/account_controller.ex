@@ -1,7 +1,7 @@
 defmodule ExMoney.Web.Api.V2.AccountController do
   use ExMoney.Web, :controller
 
-  alias ExMoney.Account
+  alias ExMoney.Accounts.Account
 
   plug Guardian.Plug.EnsureAuthenticated, handler: ExMoney.Guardian.ApiUnauthenticated
 

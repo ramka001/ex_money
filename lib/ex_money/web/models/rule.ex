@@ -9,7 +9,7 @@ defmodule ExMoney.Rule do
     field :target_id, :integer
     field :priority, :integer
 
-    belongs_to :account, ExMoney.Account
+    belongs_to :account, ExMoney.Accounts.Account
 
     timestamps()
   end

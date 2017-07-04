@@ -1,6 +1,6 @@
 defmodule ExMoney.Saltedge.AccountTest do
   use ExMoney.ModelCase
-  alias ExMoney.Account
+  alias ExMoney.Accounts.Account
 
   import ExMoney.Factory
 

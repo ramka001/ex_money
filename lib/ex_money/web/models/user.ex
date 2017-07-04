@@ -14,7 +14,7 @@ defmodule ExMoney.User do
     field :last_login_at, :naive_datetime
 
     has_many :logins, ExMoney.Login
-    has_many :accounts, ExMoney.Account
+    has_many :accounts, ExMoney.Accounts.Account
 
     timestamps()
   end

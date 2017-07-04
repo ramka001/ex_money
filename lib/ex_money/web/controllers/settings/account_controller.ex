@@ -2,7 +2,9 @@ defmodule ExMoney.Web.Settings.AccountController do
   use ExMoney.Web, :controller
   use Guardian.Phoenix.Controller
 
-  alias ExMoney.{Repo, Account}
+  alias ExMoney.Repo
+  alias ExMoney.Accounts
+  alias ExMoney.Accounts.Account
 
   plug Guardian.Plug.EnsureAuthenticated, handler: ExMoney.Guardian.Unauthenticated
   plug :scrub_params, "account" when action in [:create, :update]
@@ -14,7 +16,7 @@ defmodule ExMoney.Web.Settings.AccountController do
   end
 
   def show(conn, %{"id" => id}, _user, _claims) do
-    account = Repo.get!(Account, id)
+    account = Accounts.get_account(id)
 
     render conn, :show,
       account: account,

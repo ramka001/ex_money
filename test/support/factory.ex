@@ -19,7 +19,7 @@ defmodule ExMoney.Factory do
   end
 
   def account_factory do
-    %ExMoney.Account {
+    %ExMoney.Accounts.Account {
       saltedge_account_id: sequence(:saltedge_account_id, &(&1)) + 1,
       login: build(:login),
       name: sequence(:account_name, &"account name #{(&1)}"),

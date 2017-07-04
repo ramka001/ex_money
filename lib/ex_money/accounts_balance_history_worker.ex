@@ -1,7 +1,8 @@
 defmodule ExMoney.AccountsBalanceHistoryWorker do
   use GenServer
 
-  alias ExMoney.{Account, Repo, AccountsBalanceHistory}
+  alias ExMoney.{Repo, AccountsBalanceHistory}
+  alias ExMoney.Accounts.Account
 
   def start_link(_opts \\ []) do
     GenServer.start_link(__MODULE__, :ok, name: :accounts_balance_history_worker)
